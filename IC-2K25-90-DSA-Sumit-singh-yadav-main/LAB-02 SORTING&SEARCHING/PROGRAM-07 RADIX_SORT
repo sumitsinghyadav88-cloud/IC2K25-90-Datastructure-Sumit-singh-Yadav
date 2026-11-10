@@ -1,0 +1,84 @@
+
+#include <iostream>
+using namespace std;
+
+int getMax(int a[], int n)
+{
+    int mx = a[0];
+
+    for (int i = 1; i < n; i++)
+    {
+        if (a[i] > mx)
+            mx = a[i];
+    }
+
+    return mx;
+}
+
+void countingSort(int a[], int n, int exp)
+{
+    int output[100];
+    int count[10] = {0};
+
+    for (int i = 0; i < n; i++)
+        count[(a[i] / exp) % 10]++;
+
+    for (int i = 1; i < 10; i++)
+        count[i] += count[i - 1];
+
+    for (int i = n - 1; i >= 0; i--)
+    {
+        int digit = (a[i] / exp) % 10;
+        output[count[digit] - 1] = a[i];
+        count[digit]--;
+    }
+
+    for (int i = 0; i < n; i++)
+        a[i] = output[i];
+}
+
+void radixSort(int a[], int n)
+{
+    int mx = getMax(a, n);
+
+    for (int exp = 1; mx / exp > 0; exp *= 10)
+        countingSort(a, n, exp);
+}
+
+int main()
+{
+    int a[100], n;
+    bool valid = true;
+
+    cout << "Enter array size: ";
+    cin >> n;
+
+    if (n < 1 || n > 100)
+    {
+        cout << "Invalid array size!";
+        return 0;
+    }
+
+    cout << "Enter non-negative elements: ";
+    for (int i = 0; i < n; i++)
+    {
+        cin >> a[i];
+
+        if (a[i] < 0)
+            valid = false;
+    }
+
+    if (!valid)
+    {
+        cout << "Radix Sort requires non-negative integers!";
+        return 0;
+    }
+
+    radixSort(a, n);
+
+    cout << "Sorted Array: ";
+    for (int i = 0; i < n; i++)
+        cout << a[i] << " ";
+
+    return 0;
+}
